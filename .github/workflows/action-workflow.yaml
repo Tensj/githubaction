@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Set tag on workflow workflow dispatch
         if: github.even_name == 'workflow_dispatch'
-        run: echo "$({ github.event.inputs.version})"
+        run: echo "$({ github.event.inputs.version })"
 
   build:
     needs: prepare
@@ -36,4 +36,3 @@ jobs:
     steps:
       - name: deploy container
         run: docker run -d -p 8080:80 tensjx/github:$({ github.event.inputs.version })
-        
