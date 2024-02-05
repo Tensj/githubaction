@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Set tag on workflow workflow dispatch
         if: github.even_name == 'workflow_dispatch'
-        run: echo "$({ github.event.inputs.version })"
+        run: echo "${{ github.event.inputs.version }}"
 
   build:
     needs: prepare
@@ -23,16 +23,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: docker login
-        run: docker login -u tensjx -p $({ secrets.DOCKER_PASS })
+        run: docker login -u tensjx -p ${{ secrets.DOCKER_PASS }}
       - name: build & push
         run: |
           cd docker
-          docker build -t tensjx/github:$({ github.event.inputs.version }) .
-          docker push tensjx/github:$({ github.event.inputs.version })
+          docker build -t tensjx/github:${{ github.event.inputs.version }} .
+          docker push tensjx/github:${{ github.event.inputs.version }}
 
   Deploy:
     needs: build
     runs-on: self-hosted
     steps:
       - name: deploy container
-        run: docker run -d -p 8080:80 tensjx/github:$({ github.event.inputs.version })
+        run: docker run -d -p 8080:80 tensjx/github:${{ github.event.inputs.version }}
