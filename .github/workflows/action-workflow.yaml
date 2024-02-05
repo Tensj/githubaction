@@ -35,4 +35,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: deploy container
-        run: docker run -d -p 8080:80 tensjx/github:${{ github.event.inputs.version }}
+        run: |
+          if[-z "$( docker ps|grep myapp)"];then
+            echo " no container exist"
+          else
+            docker stop myapp; docker rm myapp
+          if
+          docker run -d --name myapp -p 8080:80 tensjx/github:${{ github.event.inputs.version }}
