@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: build
         run: |
-          cd githubaction/docker
+          cd /home/tensj1001/github/githubaction/docker
           docker build -t tensjx/github:${{ github.event.inputs.version }} .
   deploy:
     needs: build
