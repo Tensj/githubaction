@@ -1,0 +1,14 @@
+name: Hello world
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'images version'
+        required: true
+        default: 'lastest'
+jobs:
+  prepare:
+    runs-on: self-hosted
+    steps:
+      - name: echo
+        run: echo "Hello World!!!"
