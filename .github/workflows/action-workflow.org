@@ -7,28 +7,26 @@ on:
         description: 'input version'
         default: 'lastest'
         required: true
-
 jobs:
   prepare:
     runs-on: self-hosted
     steps:
-      - name: Set tag on workflow workflow dispatch
-        if: github.event_name == 'workflow_dispatch'
-        run: echo "${{ github.event.inputs.version }}"
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: docker login
+        run: docker login -u tensjx -p ${{ secrets.DOCKER_PASS }}
 
   build:
     needs: prepare
     runs-on: self-hosted
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: docker login
-        run: docker login -u tensjx -p ${{ secrets.DOCKER_PASS }}
       - name: build & push
         run: |
           cd docker
           docker build -t tensjx/github:${{ github.event.inputs.version }} .
-          docker push tensjx/github:${{ github.event.inputs.version }}
+      - name: 
+        run: docker push tensjx/github:${{ github.event.inputs.version }}
 
   Deploy:
     needs: build
@@ -36,9 +34,9 @@ jobs:
     steps:
       - name: deploy container
         run: |
-          if[-z "$( docker ps|grep myapp)"];then
+          if [ -z "$( docker ps|grep myapp)" ];then
             echo " no container exist"
           else
             docker stop myapp; docker rm myapp
-          if
+          fi
           docker run -d --name myapp -p 8080:80 tensjx/github:${{ github.event.inputs.version }}

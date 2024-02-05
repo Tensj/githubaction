@@ -1,0 +1,32 @@
+name: my workflow
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: images version
+        required: true
+        default: lastest
+jobs:
+  prepare:
+    runs-on: self-hosted
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: docker login
+        run: docker login -u tensjx -p ${{ secrets.DOCKER_PASS }}
+
+  build:
+    needs: prepare
+    runs-on: self-hosted
+    steps:
+      - name: build
+        run: |
+          cd docker
+          docker build -t tensjx/github:${{ github.event.inputs.version }} .
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: run container
+        run: docker run -d --name myapp -p 8080:80 tensjx/github:${{ github.event.inputs.version }}
