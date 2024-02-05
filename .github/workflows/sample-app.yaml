@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: images version
+        description: 'images version'
         required: true
-        default: lastest
+        default: 'lastest'
 jobs:
   prepare:
     runs-on: self-hosted
